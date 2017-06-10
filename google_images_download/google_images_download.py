@@ -131,6 +131,10 @@ def download(search_keywords, keywords, download_limit, requests_delay, no_clobb
             print("completed\t====> {}".format(filename))
             dl_counter += 1
 
+        except UnicodeEncodeError: # If there is any UnicodeEncodeError
+            error_count += 1
+            print("UnicodeEncodeError on image {}".format(filename))
+            
         except IOError:  # If there is any IOError
             error_count += 1
             print("IOError on image {}".format(filename))

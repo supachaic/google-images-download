@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import click
-
+import os
 from .google_images_download import main as gi_download
 from .gi_from_file import search as search_from_file
 
@@ -30,8 +30,12 @@ def validate_postiive_int(ctx, param, value):
 @click.option(
     '--requests-delay', type=int, default=0, callback=validate_postiive_int,
     help='Delay between requests(seconds). set 0 for no delay')
-def download(search_keywords, keywords, download_limit, requests_delay, no_clobber):
-    gi_download(search_keywords, keywords, download_limit, requests_delay, no_clobber)
+@click.option(
+    '--path', type=str, default=None,
+    help='Directory to save download file.')
+
+def download(search_keywords, keywords, download_limit, requests_delay, no_clobber, path):
+    gi_download(search_keywords, keywords, download_limit, requests_delay, no_clobber, path)
 
 
 @cli.command()

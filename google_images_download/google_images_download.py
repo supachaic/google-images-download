@@ -54,8 +54,8 @@ def _images_get_all_items(page):
     return items
 
 
-def main(search_keywords, keywords, download_limit, requests_delay, no_clobber):
-    t0 = time.time()  # start the timer
+def download(search_keywords, keywords, download_limit, requests_delay, no_clobber, path=None):
+    t0 = time.time()  # start the timer    
     items = []
     # Download Image Links
     for i, search_keyword in enumerate(search_keywords):
@@ -96,17 +96,27 @@ def main(search_keywords, keywords, download_limit, requests_delay, no_clobber):
     print("Total time taken: {} Seconds".format(int(total_time)))
     print("Starting Download...")
 
-    # To save imges to the same directory
+    # To save imges to the same directory or create new directory if specify path
     # IN this saving process we are just skipping the URL if there is any error
 
     error_count = 0
     dl_counter = 0
     skip_counter = 0
     ua = UserAgent()
+    
+    # Check if path is specified and exist, if not exists then create new path
+    if path and not os.path.exists(path):
+        os.mkdir(path)
+        
     for k, item in enumerate(items):
         if download_limit != 0 and dl_counter >= download_limit:
             break
-        filename = basename(item)
+            
+        if not path:
+            filename = basename(item)
+        else:
+            filename = os.path.join(path, basename(item))
+        
         if os.path.isfile(filename) and no_clobber:
             print('Skipped\t\t====> {}'.format(filename))
             skip_counter += 1
@@ -141,3 +151,6 @@ def main(search_keywords, keywords, download_limit, requests_delay, no_clobber):
     {} ----> total Skip""".format(error_count, skip_counter))
 
     # ----End of the main program ----#
+
+def main(search_keywords, keywords, download_limit, requests_delay, no_clobber, path):
+    download(search_keywords, keywords, download_limit, requests_delay, no_clobber, path)
